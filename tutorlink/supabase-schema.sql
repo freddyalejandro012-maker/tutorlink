@@ -87,3 +87,71 @@ create policy "Estudiante crea solicitudes" on solicitudes for insert with check
 create policy "Profesor ve sus cotizaciones" on cotizaciones for all using (teacher_id = auth.uid() or solicitud_id in (select id from solicitudes where student_id = auth.uid()));
 create policy "Ver mensajes del deal" on messages for all using (sender_id = auth.uid() or solicitud_id in (select id from solicitudes where student_id = auth.uid()));
 create policy "Profesor ve sus transacciones" on transactions for all using (teacher_id = auth.uid());
+
+-- =============================================
+-- Registro y seguimiento de horas (clases y planes)
+-- =============================================
+
+create table horas_alumnos (
+  id uuid default gen_random_uuid() primary key,
+  teacher_id uuid references profiles(id) on delete cascade,
+  nombre text not null,
+  email text,
+  telefono text,
+  materia text,
+  notas text,
+  created_at timestamptz default now()
+);
+
+create table horas_planes (
+  id uuid default gen_random_uuid() primary key,
+  teacher_id uuid references profiles(id) on delete cascade,
+  alumno_id uuid references horas_alumnos(id) on delete cascade,
+  nombre text not null,
+  materia text,
+  horas_totales numeric not null check (horas_totales > 0),
+  precio_total numeric default 0,
+  fecha_inicio date default current_date,
+  fecha_vencimiento date,
+  notas text,
+  archivado boolean default false,
+  created_at timestamptz default now()
+);
+
+create table horas_pagos (
+  id uuid default gen_random_uuid() primary key,
+  plan_id uuid references horas_planes(id) on delete cascade,
+  monto numeric not null check (monto > 0),
+  fecha date default current_date,
+  metodo text
+);
+
+create table horas_sesiones (
+  id uuid default gen_random_uuid() primary key,
+  teacher_id uuid references profiles(id) on delete cascade,
+  alumno_id uuid references horas_alumnos(id) on delete cascade,
+  plan_id uuid references horas_planes(id) on delete set null,   -- null = clase suelta
+  fecha date not null,
+  hora_inicio time,
+  duracion numeric not null check (duracion > 0),                -- horas
+  materia text,
+  tema text,
+  notas text,
+  estado text check (estado in ('realizada','falta_descuenta','falta_justificada')) default 'realizada',
+  precio numeric default 0,                                      -- solo clases sueltas
+  pagado boolean default false,
+  created_at timestamptz default now()
+);
+
+alter table horas_alumnos  enable row level security;
+alter table horas_planes   enable row level security;
+alter table horas_pagos    enable row level security;
+alter table horas_sesiones enable row level security;
+
+create policy "Profesor gestiona sus alumnos" on horas_alumnos for all using (teacher_id = auth.uid());
+create policy "Alumno ve su ficha" on horas_alumnos for select using (email = (select email from auth.users where id = auth.uid()));
+create policy "Profesor gestiona sus planes" on horas_planes for all using (teacher_id = auth.uid());
+create policy "Alumno ve sus planes" on horas_planes for select using (alumno_id in (select id from horas_alumnos where email = (select email from auth.users where id = auth.uid())));
+create policy "Profesor gestiona pagos" on horas_pagos for all using (plan_id in (select id from horas_planes where teacher_id = auth.uid()));
+create policy "Profesor gestiona sus sesiones" on horas_sesiones for all using (teacher_id = auth.uid());
+create policy "Alumno ve sus sesiones" on horas_sesiones for select using (alumno_id in (select id from horas_alumnos where email = (select email from auth.users where id = auth.uid())));

@@ -143,3 +143,22 @@ npm run dev
 | Dominio | .vercel.app | Gratis |
 
 **Costo total para lanzar: $0** (solo el dominio ~$10/año si quieres uno personalizado)
+
+---
+
+## ⏱️ Registro de horas (clases y planes)
+
+Ruta: **`/horas`** (pestaña *Horas* en el menú).
+
+**Para el profesor**
+- **Alumnos**: ficha con teléfono (enlace a WhatsApp), materia, email y notas.
+- **Planes**: paquetes de horas prepagadas (4 h, 8 h, 12 h, 40 h o personalizados) con precio, fecha de inicio/vencimiento y pagos parciales. Barra de avance, horas restantes y estado automático: *Activo, Por agotarse, Completado, Vencido, Archivado*.
+- **Registrar horas**: cada sesión se descuenta de un plan o se registra como **clase suelta** (con precio y estado de pago). Incluye fecha, hora, duración, tema avanzado, notas y asistencia (*Realizada, Falta que descuenta, Falta justificada*). Avisa si una sesión excede el saldo del plan.
+- **Resumen**: horas del mes, planes activos, cobrado del mes, monto por cobrar, gráfico de horas por semana y alertas (planes por agotarse, vencidos o completados con deuda).
+- **Historial**: filtros por alumno, tipo y rango de fechas, y **exportación a CSV** (abre en Excel).
+
+**Para el estudiante**: en *Mis horas* ve sus planes, horas usadas/restantes, saldo y el historial de clases, si el profesor lo registró con el mismo email de su cuenta.
+
+Los datos se guardan en el navegador (`localStorage`), igual que el resto del demo. Las tablas equivalentes para Supabase (`horas_alumnos`, `horas_planes`, `horas_pagos`, `horas_sesiones`) están al final de `supabase-schema.sql`.
+
+Prueba con el profesor demo `carlos@tutor.com` / `123456` y el estudiante `juan@alumno.com` / `123456`.
