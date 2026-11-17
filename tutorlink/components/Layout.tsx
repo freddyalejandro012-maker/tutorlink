@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { Home, BookOpen, MessageCircle, User, Coins, Bell, LogOut } from 'lucide-react'
+import { Home, BookOpen, MessageCircle, User, Coins, Bell, LogOut, Clock } from 'lucide-react'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -15,11 +15,13 @@ export default function Layout({ children, user, credits, onLogout }: LayoutProp
   const studentNav = [
     { href: '/',           icon: Home,          label: 'Inicio' },
     { href: '/buscar',     icon: BookOpen,       label: 'Buscar' },
+    { href: '/horas',      icon: Clock,          label: 'Mis horas' },
     { href: '/chat',       icon: MessageCircle,  label: 'Chat' },
     { href: '/perfil',     icon: User,           label: 'Perfil' },
   ]
   const teacherNav = [
     { href: '/',           icon: Home,          label: 'Inicio' },
+    { href: '/horas',      icon: Clock,          label: 'Horas' },
     { href: '/creditos',   icon: Coins,          label: 'Créditos' },
     { href: '/solicitudes',icon: BookOpen,       label: 'Solicitudes' },
     { href: '/chat',       icon: MessageCircle,  label: 'Chat' },

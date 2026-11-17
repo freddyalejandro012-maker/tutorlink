@@ -102,7 +102,7 @@ html { font-family: var(--font-body); background: #FAFAF8; color: #1A1A18; }
 /* Credit pill */
 .credit-pill {
   display: inline-flex; align-items: center; gap: 5px;
-  padding: 4px 10px; border-radius: 999px;
+  padding: 4px 10px; border-radius: 999px; white-space: nowrap;
   background: #E1F5EE; border: 1px solid #9FE1CB;
   font-size: 12px; font-weight: 600; color: #085041;
 }
